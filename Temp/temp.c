@@ -39,7 +39,7 @@ void readFile(const char *filename, struct DataRow *dataArray, int numRows)
 void findAsciiData(struct DataRow *dataArray, int numRows, int asciiValue, int height, double xOffset, double yOffset) 
 {
 // Print the corresponding character instead of ASCII value
-    printf("Data for character '%c' (height = %d):\n", (char)asciiValue, height);
+    //printf("Data for character '%c' (height = %d):\n", (char)asciiValue, height);
 
     for (int i = 0; i < numRows; i++) 
     {
@@ -181,7 +181,7 @@ int main() {
 
         if (xOffset + wordWidth > LINE_WIDTH) 
         {
-            printf("Remaining width not enough\n");
+            //printf("Remaining width not enough\n");
             xOffset = 0.0; // Move to the next line
             yOffset -= ((36.0 / 18.0) * height );           //change here
         }   
@@ -190,7 +190,7 @@ int main() {
         processWord(dataArray, NUM_ROWS, word, height, &xOffset, yOffset);
 
         // Print the width of the word
-        printf("The width of the word '%s' is: %d\n", word, wordWidth);
+        //printf("The width of the word '%s' is: %d\n", word, wordWidth);
     }
 
     // Close the text file
