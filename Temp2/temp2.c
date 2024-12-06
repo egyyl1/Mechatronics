@@ -4,7 +4,6 @@
 #define NUM_ROWS 1027  // The number of rows in the file
 #define COLUMNS 3      // The number of columns in each row
 #define ASCII_MARKER 999 // Marker indicating the start of a new batch
-#define LINE_WIDTH 100   // Maximum width of a line
 
 struct DataRow 
 {
@@ -36,7 +35,7 @@ void readFile(const char *filename, struct DataRow *dataArray, int numRows)
 //*****Testing bit****/
 
 // Function to find and display data for a specific ASCII value
-void findAsciiData(struct DataRow *dataArray, int numRows, int asciiValue, int height, double xOffset, double yOffset) 
+void findAsciiData(struct DataRow *dataArray, int numRows, int asciiValue, int height, double xOffset) 
 {
 // Print the corresponding character instead of ASCII value
     printf("Data for character '%c' (height = %d):\n", (char)asciiValue, height);
@@ -56,7 +55,7 @@ void findAsciiData(struct DataRow *dataArray, int numRows, int asciiValue, int h
 
                 // Multiply the first two columns by the height and add the xOffset to the first column
                 double adjustedCol1 = (dataArray[j].col1 / 18.0) * height + xOffset;
-                double adjustedCol2 = (dataArray[j].col2 / 18.0) * height + yOffset;
+                double adjustedCol2 = (dataArray[j].col2 / 18.0) * height;
 
                 // Print the adjusted data
                 printf("%.1f %.1f %d\n", adjustedCol1, adjustedCol2, dataArray[j].col3);
@@ -84,8 +83,9 @@ int readNextWordFromFile(FILE *asciiFile, char *word)
 //*****Testing bit */
 
 // Function to process a single word
-void processWord(struct DataRow *dataArray, int numRows, char *word, int height, double *xOffset, double yOffset) 
+void processWord(struct DataRow *dataArray, int numRows, char *word, int height) 
 {
+    double xOffset = 0.0; // Initialize x-offset to 0
     
     for (int i = 0; word[i] != '\0'; i++) 
     {
@@ -93,17 +93,14 @@ void processWord(struct DataRow *dataArray, int numRows, char *word, int height,
         int asciiValue = (int)word[i];  
 
         // Find and display data for this character and apply current xOffset
-        findAsciiData(dataArray, numRows, asciiValue, height, *xOffset, yOffset);  
+        findAsciiData(dataArray, numRows, asciiValue, height, xOffset);  
 
         // Update the xOffset with the scaled width of the current character
-        *xOffset += (18.0 / 18.0) * height;
+        xOffset += (18.0 / 18.0) * height;
     }
-    //Add a space (ASCII 32) after each word
-    findAsciiData(dataArray, NUM_ROWS, 32, height, *xOffset, yOffset);
-
-    *xOffset += (18.0 / 18.0) * height;
+        //Add a space (ASCII 32) after each word
+        findAsciiData(dataArray, NUM_ROWS, 32, height, xOffset);
 }
-
 //*****Testing bit end */
 
 
@@ -164,26 +161,14 @@ int main() {
 
     char word[100];  // Buffer to store a word (assuming words are not longer than 100 characters)
 
-    //Initialise xOffset to 0
-    double xOffset = 0.0;
-    // Start Y-offset at height
-    double yOffset = 0 - height;  
-    
-    // Read and process words one by one
+// Read and process words one by one
     while (readNextWordFromFile(asciiFile, word)) 
     {
          // Calculate the width of the word
         int wordWidth = calculateWordWidth(word, height);
 
-        if (xOffset + wordWidth > LINE_WIDTH) 
-        {
-            printf("Remaining width not enough\n");
-            xOffset = 0.0; // Move to the next line
-            yOffset -= ((18.0 / 18.0) * height + 5);
-        }   
-        
         // Process each word
-        processWord(dataArray, NUM_ROWS, word, height, &xOffset, yOffset);
+        processWord(dataArray, NUM_ROWS, word, height);
 
         // Print the width of the word
         printf("The width of the word '%s' is: %d\n", word, wordWidth);
