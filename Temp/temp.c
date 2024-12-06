@@ -58,8 +58,12 @@ void findAsciiData(struct DataRow *dataArray, int numRows, int asciiValue, int h
                 double adjustedCol1 = (dataArray[j].col1 / 18.0) * height + xOffset;
                 double adjustedCol2 = (dataArray[j].col2 / 18.0) * height + yOffset;
 
+                // Determine S and G values based on column 3
+                const char *sValue = (dataArray[j].col3 == 1) ? "S1000" : "S0";
+                const char *gValue = (dataArray[j].col3 == 1) ? "G1" : "G0";
+
                 // Print the adjusted data
-                printf("%.1f %.1f %d\n", adjustedCol1, adjustedCol2, dataArray[j].col3);
+                printf("%s\n%s X%.1f Y%.1f\n", sValue, gValue, adjustedCol1, adjustedCol2);
             }
             break;
         }
@@ -179,7 +183,7 @@ int main() {
         {
             printf("Remaining width not enough\n");
             xOffset = 0.0; // Move to the next line
-            yOffset -= ((18.0 / 18.0) * height + 5);
+            yOffset -= ((36.0 / 18.0) * height );           //change here
         }   
         
         // Process each word
