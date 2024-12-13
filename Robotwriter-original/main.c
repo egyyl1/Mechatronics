@@ -31,7 +31,7 @@ int main()
     //char mode[]= {'8','N','1',0};
     char buffer[100];
 
-    // If we cannot open the port then give up immediately
+    // If we cannot open the port end code
     if ( CanRS232PortBeOpened() == -1 )
     {
         printf ("\nUnable to open the COM port (specified in serial.h) ");
@@ -225,4 +225,3 @@ void SendCommands (char *buffer )
     PrintBuffer (&buffer[0]);
     WaitForReply();
 }
-
